@@ -25,6 +25,29 @@
         android:enabled="true"
         />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_nearby_advertising"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_location_searching_black_24dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_nearby_discovery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/button_nearby_advertising"
+        android:src="@drawable/ic_search_black_24dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        />
+
+
     <fragment android:name="instantiator.pairing.ui.fragments.MirrorDisplayFragment"
         android:id="@+id/mirror_fragment"
         android:layout_width="match_parent"

@@ -8,4 +8,18 @@
     <string name="btn_reset">Reset</string>
     <string name="btn_permissions">Permissions...</string>
 
+    <string name="toast_inform_nearby_advertising_success">Advertising nearby services...</string>
+    <string name="toast_inform_nearby_discovering_success">Discovering nearby services...</string>
+    <string name="toast_inform_nearby_requesting_success">Requesting connection...</string>
+    <string name="toast_inform_nearby_connected">Nearby connection established!</string>
+    <string name="toast_inform_nearby_disconnected">Nearby disconnected.</string>
+
+    <string name="toast_warning_cannot_initiate_nearby_permissions_missing">Please grant all permissions before intiating the nearby service.</string>
+    <string name="toast_warning_unable_to_advertise_nearby">Unable to initiate nearby advertising service.</string>
+    <string name="toast_warning_unable_to_discover_nearby">Unable to initiate nearby discovery.</string>
+    <string name="toast_warning_unable_to_request_nearby_connection">Unable to request nearby connection.</string>
+    <string name="toast_warning_nearby_connection_lost">Nearby connection lost.</string>
+    <string name="toast_warning_nearby_connection_result_rejected">Nearby connection was rejected by your peer.</string>
+    <string name="toast_warning_nearby_connection_result_error">An error occured establishing the nearby connection.</string>
+
 </resources>
