@@ -8,6 +8,9 @@
     <string name="btn_reset">Reset</string>
     <string name="btn_permissions">Permissions...</string>
 
+    <string name="menu_advertise">Advertise...</string>
+    <string name="menu_discover">Discover...</string>
+
     <string name="toast_inform_nearby_advertising_success">Advertising nearby services...</string>
     <string name="toast_inform_nearby_discovering_success">Discovering nearby services...</string>
     <string name="toast_inform_nearby_requesting_success">Requesting connection...</string>

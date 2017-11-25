@@ -76,18 +76,23 @@ public class MirrorDisplayFragment extends Fragment implements TouchReceiver, To
     panel_surface.setOnTouchListener(new View.OnTouchListener() {
       @Override
       public boolean onTouch(View view, MotionEvent event) {
-        switch (event.getAction()) {
-          case MotionEvent.ACTION_DOWN:
-          case MotionEvent.ACTION_MOVE:
-            float x = event.getX();
-            float y = event.getY();
-            int cell_x = panel_surface.cellCoordinateForTouchX(x);
-            int cell_y = panel_surface.cellCoordinateForTouchY(y);
-            panel_surface.draw_touch(cell_x, cell_y, personal_radius, personal_colour);
-            break;
-        }
+        if (view == panel_surface) {
+          switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+              float x = event.getX();
+              float y = event.getY();
+              int cell_x = panel_surface.cellCoordinateForTouchX(x);
+              int cell_y = panel_surface.cellCoordinateForTouchY(y);
+              panel_surface.draw_touch(cell_x, cell_y, personal_radius, personal_colour);
+              return true;
+            default:
+              return true;
+          }
 
-        return true;
+        } else {
+          return false;
+        }
       }
     });
 

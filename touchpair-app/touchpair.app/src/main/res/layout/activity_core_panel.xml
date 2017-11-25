@@ -47,12 +47,22 @@
         android:layout_marginTop="10dp"
         />
 
-
     <fragment android:name="instantiator.pairing.ui.fragments.MirrorDisplayFragment"
         android:id="@+id/mirror_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/button_permissions"
+        />
+
+    <TextView
+        android:id="@+id/text_nearby_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="nearby state"
+        android:textColor="#ffffff"
         />
 
 </RelativeLayout>

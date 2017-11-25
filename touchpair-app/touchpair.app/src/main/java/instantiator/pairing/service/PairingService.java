@@ -62,6 +62,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
   public void start_advertising(Activity activity) {
     if (anyOutstandingPermissions()) {
       informUser(R.string.toast_warning_cannot_initiate_nearby_permissions_missing);
+      Log.w(TAG, "Not all permissions granted. Cannot start advertising.");
       return;
     }
 
@@ -78,6 +79,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
             @Override
             public void onSuccess(Void unusedResult) {
               informUser(R.string.toast_inform_nearby_advertising_success);
+              Log.i(TAG, "Advertising nearby services.");
               setNearbyState(NearbyStates.Advertising);
             }
           })
@@ -86,6 +88,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
             @Override
             public void onFailure(@NonNull Exception e) {
               informUser(R.string.toast_warning_unable_to_advertise_nearby);
+              Log.w(TAG, "Unable to initiate nearby advertising service: " + e.getMessage());
               stop_nearby();
             }
           });
@@ -96,6 +99,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
   public void stop_nearby() {
     if (nearby_connections_client != null) {
       nearby_connections_client.stopAllEndpoints();
+      Log.i(TAG, "All nearby endpoints stopped.");
     }
     setNearbyState(NearbyStates.Off);
   }
@@ -111,6 +115,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
   public void start_discovery(Activity activity) {
     if (anyOutstandingPermissions()) {
       informUser(R.string.toast_warning_cannot_initiate_nearby_permissions_missing);
+      Log.w(TAG, "Not all permissions granted. Cannot start discovery.");
       return;
     }
 
@@ -126,6 +131,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
             @Override
             public void onSuccess(Void unusedResult) {
               informUser(R.string.toast_inform_nearby_discovering_success);
+              Log.i(TAG, "Discovering nearby services.");
               setNearbyState(NearbyStates.Discovering);
             }
           })
@@ -134,6 +140,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
             @Override
             public void onFailure(@NonNull Exception e) {
               informUser(R.string.toast_warning_unable_to_discover_nearby);
+              Log.w(TAG," Unable to initiate nearby discovey: " + e.getMessage());
               stop_nearby();
             }
           });
@@ -161,6 +168,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
             @Override
             public void onFailure(@NonNull Exception e) {
               informUser(R.string.toast_warning_unable_to_request_nearby_connection);
+              Log.w(TAG, "Unable to request nearby connection...");
               stop_nearby();
             }
           });
@@ -169,6 +177,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
     @Override
     public void onEndpointLost(String s) {
       informUser(R.string.toast_warning_nearby_connection_lost);
+      Log.w(TAG, "Nearby connection lost.");
     }
   };
 
@@ -177,6 +186,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
     public void onConnectionInitiated(String endpointId, ConnectionInfo connectionInfo) {
       // see the Authenticate Connection section of the documentation an important auth step!
       // https://developers.google.com/nearby/connections/android/manage-connections
+      Log.i(TAG, "Connection initiated. Accepting automatically...");
       nearby_connections_client.acceptConnection(endpointId, nearby_payload_callback); // accept
     }
 
@@ -185,16 +195,19 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
       switch (result.getStatus().getStatusCode()) {
         case ConnectionsStatusCodes.STATUS_OK:
           informUser(R.string.toast_inform_nearby_connected);
+          Log.i(TAG, "Nearby connection established.");
           setNearbyState(NearbyStates.Connected);
           break;
 
         case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
           informUser(R.string.toast_warning_nearby_connection_result_rejected);
+          Log.w(TAG, "Nearby connection was rejected.");
           stop_nearby();
           break;
 
         case ConnectionsStatusCodes.STATUS_ERROR:
           informUser(R.string.toast_warning_nearby_connection_result_error);
+          Log.w(TAG, "Error encountered establishing nearby connection.");
           stop_nearby();
           break;
       }
@@ -203,6 +216,7 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
     @Override
     public void onDisconnected(String s) {
       informUser(R.string.toast_inform_nearby_disconnected);
+      Log.i(TAG, "Nearby connection disconnected.");
       stop_nearby();
     }
   };
@@ -210,8 +224,8 @@ public class PairingService extends AbstractBackgroundBindingService<IPairingSer
   private PayloadCallback nearby_payload_callback = new PayloadCallback() {
     @Override
     public void onPayloadReceived(String s, Payload payload) {
-      // TODO: what in the hell do I do with this?!
-      Log.d(TAG, "Payload received!");
+      Log.i(TAG, "Payload received!");
+      // TODO: receive and process payload
     }
 
     @Override
