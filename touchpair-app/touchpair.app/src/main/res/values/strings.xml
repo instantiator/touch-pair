@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Pairing</string>
+
+    <string name="notification_pairing_service_title">Pairing service</string>
+    <string name="notification_pairing_service_content">Pairing service is running.</string>
+    <string name="notification_pairing_service_ticker">Pairing service has started.</string>
+
+    <string name="btn_reset">Reset</string>
+    <string name="btn_permissions">Permissions...</string>
+
+</resources>
