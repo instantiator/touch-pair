@@ -29,7 +29,9 @@ public class MirrorDisplayFragment extends Fragment implements TouchReceiver, To
   private MirrorFragmentListener listener;
 
   private int personal_radius = 3;
-  private int personal_colour = Color.WHITE;
+  private int personal_colour = Color.CYAN;
+  private int remote_colour = Color.YELLOW;
+  private boolean force_colours = true;
 
   public MirrorDisplayFragment() { }
 
@@ -85,6 +87,10 @@ public class MirrorDisplayFragment extends Fragment implements TouchReceiver, To
               int cell_x = panel_surface.cellCoordinateForTouchX(x);
               int cell_y = panel_surface.cellCoordinateForTouchY(y);
               panel_surface.draw_touch(cell_x, cell_y, personal_radius, personal_colour);
+              if (receiver != null) {
+                TouchEventData ted = new TouchEventData(cell_x, cell_y, personal_colour, personal_radius);
+                receiver.receive_touch(ted);
+              }
               return true;
             default:
               return true;
@@ -129,8 +135,9 @@ public class MirrorDisplayFragment extends Fragment implements TouchReceiver, To
   }
 
   @Override
-  public void on_touch_received(TouchEventData data) {
-    panel_surface.draw_touch(data.grid_x, data.grid_y, data.radius, data.colour);
+  public void receive_touch(TouchEventData data) {
+    int colour = force_colours ? remote_colour : data.colour;
+    panel_surface.draw_touch(data.grid_x, data.grid_y, data.radius, colour);
   }
 
   public void reset() {

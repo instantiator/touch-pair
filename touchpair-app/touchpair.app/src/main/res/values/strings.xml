@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pairing</string>
+    <string name="app_name">Touch-Pairing</string>
 
     <string name="notification_pairing_service_title">Pairing service</string>
     <string name="notification_pairing_service_content">Pairing service is running.</string>
@@ -10,6 +10,8 @@
 
     <string name="menu_advertise">Advertise...</string>
     <string name="menu_discover">Discover...</string>
+    <string name="menu_stop_nearby">Stop nearby service</string>
+    <string name="menu_clear_view">Clear view</string>
 
     <string name="toast_inform_nearby_advertising_success">Advertising nearby services...</string>
     <string name="toast_inform_nearby_discovering_success">Discovering nearby services...</string>

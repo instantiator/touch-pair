@@ -5,12 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import at.favre.lib.dali.Dali;
 import at.favre.lib.dali.builder.processor.RenderScriptColorFilter;
 
 public class BlurringBitmapSurfaceView extends AbstractBitmapSurfaceView {
+  private static final String TAG = "BBSV";
 
   protected Dali dali;
   Thread redraw_thread;
@@ -34,28 +38,29 @@ public class BlurringBitmapSurfaceView extends AbstractBitmapSurfaceView {
   @Override
   protected void doInit(Context context) {
     dali = Dali.create(context);
+  }
 
-    redraw_thread = new Thread(new Runnable() {
+  private Thread createRedrawThread() {
+    return new Thread(new Runnable() {
       @Override
       public void run() {
         do {
           if (running) { tick(); }
-          try {
-            Thread.sleep(50);
-          } catch (InterruptedException ex) { /* nop */ }
+          try { Thread.sleep(50); } catch (Exception e) { /* nop */ }
         } while (running);
       }
     });
   }
 
+  private int fade_filter = Color.argb(25, 0, 0, 0);
+
   @Override
   protected Bitmap processBitmap(Bitmap grid_bitmap, long duration) {
     if (!safe_to_draw) { return grid_bitmap; }
-
-    float secs = duration / 1000.0f;
+    // float secs = duration / 1000.0f;
     return dali.load(grid_bitmap)
       .blurRadius(2)
-      .colorFilter(Color.argb(25, 0, 0, 0))
+      .colorFilter(fade_filter)
       .getAsBitmap();
   }
 
@@ -81,17 +86,27 @@ public class BlurringBitmapSurfaceView extends AbstractBitmapSurfaceView {
   private boolean running;
 
   public void start() {
-    if (!running) {
+    if (!running || redraw_thread == null) {
       running = true;
+      redraw_thread = createRedrawThread();
       redraw_thread.start();
     }
   }
 
   public void stop() {
-    running = false;
+    try {
+      running = false;
+      redraw_thread.interrupt();
+    } catch (Exception e) {
+      Log.w(TAG, "Exception for redraw_thread.", e);
+    }
+    redraw_thread = null;
   }
 
   public void reset() {
+    boolean was_running = running;
+    stop();
+
     grid_bitmap_lock.writeLock().lock();
 
     if (!grid_bitmap.isMutable()) {
@@ -109,5 +124,9 @@ public class BlurringBitmapSurfaceView extends AbstractBitmapSurfaceView {
     canvas.drawCircle(grid_bitmap.getWidth()/2, grid_bitmap.getHeight()/2, 4.0f, paint);
 
     grid_bitmap_lock.writeLock().unlock();
+
+    if (was_running) {
+      start();
+    }
   }
 }

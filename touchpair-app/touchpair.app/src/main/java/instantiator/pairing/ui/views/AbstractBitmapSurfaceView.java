@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -20,12 +21,15 @@ public abstract class AbstractBitmapSurfaceView extends SurfaceView implements S
   protected boolean surface_created = false;
   protected boolean bitmap_available = false;
   protected boolean safe_to_draw = false;
+  protected boolean drawing_right_now = false;
 
   protected Bitmap grid_bitmap;
   protected long previous_time;
 
   protected ReadWriteLock main_bitmap_lock;
   protected ReadWriteLock grid_bitmap_lock;
+
+  protected Handler main_thread_handler;
 
   public AbstractBitmapSurfaceView(Context context) {
     super(context);
@@ -62,6 +66,7 @@ public abstract class AbstractBitmapSurfaceView extends SurfaceView implements S
     previous_time = new Date().getTime();
     main_bitmap_lock = new ReentrantReadWriteLock();
     grid_bitmap_lock = new ReentrantReadWriteLock();
+    main_thread_handler = new Handler(context.getMainLooper());
     doInit(context);
   }
 
@@ -108,13 +113,20 @@ public abstract class AbstractBitmapSurfaceView extends SurfaceView implements S
     grid_bitmap_lock.writeLock().unlock();
 
     previous_time = time;
-    doDraw(getHolder());
+
+    main_thread_handler.post(new Runnable() {
+      @Override
+      public void run() {
+        doDraw(getHolder());
+      }
+    });
   }
 
   protected abstract Bitmap processBitmap(Bitmap grid_bitmap, long duration);
 
   private void doDraw(SurfaceHolder holder) {
-    if (safe_to_draw) {
+    if (safe_to_draw && !drawing_right_now) {
+      drawing_right_now = true;
       Canvas canvas = holder.lockCanvas();
 
       Rect source_rect = new Rect(0, 0, grid_bitmap.getWidth(), grid_bitmap.getHeight());
@@ -126,11 +138,14 @@ public abstract class AbstractBitmapSurfaceView extends SurfaceView implements S
 
       grid_bitmap_lock.readLock().lock();
       main_bitmap_lock.writeLock().lock();
+
       canvas.drawBitmap(grid_bitmap, source_rect, dest_rect, paint);
+
       main_bitmap_lock.writeLock().unlock();
       grid_bitmap_lock.readLock().unlock();
-
       holder.unlockCanvasAndPost(canvas);
+
+      drawing_right_now = false;
     }
   }
 

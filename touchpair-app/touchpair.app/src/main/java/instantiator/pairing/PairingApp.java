@@ -21,7 +21,9 @@ public class PairingApp extends Application {
     Manifest.permission.BLUETOOTH_ADMIN,
     Manifest.permission.ACCESS_WIFI_STATE,
     Manifest.permission.CHANGE_WIFI_STATE,
-    Manifest.permission.ACCESS_COARSE_LOCATION
+    Manifest.permission.ACCESS_COARSE_LOCATION,
+    Manifest.permission.RECORD_AUDIO,
+    Manifest.permission.ACCESS_NETWORK_STATE
   };
 
 }
